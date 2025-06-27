@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "live-server": "^1.2.2",
+    "parcel": "^2.15.4",
+    "sass": "^1.89.2"
+  },
+  "scripts": {
+    "start": "parcel ./starter/index.html",
+    "build": "parcel build ./starter/index.html"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.15.4"
+  }
+}
