@@ -1,7 +1,10 @@
 {
   "dependencies": {
-    "live-server": "^1.2.2",
+    "core-js": "^3.43.0",
+    "fractional": "^1.0.0",
+    "live-server": "^1.2.0",
     "parcel": "^2.15.4",
+    "regenerator-runtime": "^0.14.1",
     "sass": "^1.89.2"
   },
   "scripts": {
