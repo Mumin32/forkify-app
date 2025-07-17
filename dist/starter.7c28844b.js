@@ -697,6 +697,7 @@ const timeout = function(s) {
 const controlRecepies = async function() {
     try {
         const id = window.location.hash.slice(1);
+        console.log(id);
         if (!id) return;
         (0, _recipeViewJsDefault.default).renderSpinner();
         //Loading recipe
@@ -717,15 +718,17 @@ const controlSearchResults = async function(params) {
         await _modelJs.loadSearchResults(query);
         //Render results
         console.log(_modelJs.state.search.results);
-        (0, _resultsViewJsDefault.default).render(_modelJs.getSearchResultsPage(4));
-        //4) REnder initial pagination buttons
+        (0, _resultsViewJsDefault.default).render(_modelJs.getSearchResultsPage());
         (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
     } catch (err) {
         console.log(err);
     }
 };
-const controlPagination = function() {
-    console.log('Pag controller');
+const controlPagination = function(goToPage) {
+    //Render NEW Results
+    (0, _resultsViewJsDefault.default).render(_modelJs.getSearchResultsPage(goToPage));
+    //4) REnder new pagination buttons
+    (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
 };
 const init = function() {
     (0, _recipeViewJsDefault.default).addHandlerRender(controlRecepies);
@@ -2008,7 +2011,7 @@ const state = {
 };
 const loadRecipe = async function(id) {
     try {
-        const data = await (0, _helpersJs.getJSON)(`${(0, _config.API_URL)}${id}`);
+        const data = await (0, _helpersJs.getJSON)(`${(0, _config.API_URL)}/${id}`);
         const { recipe } = data.data;
         state.recipe = {
             id: recipe.id,
@@ -2135,7 +2138,7 @@ class RecipeView extends (0, _viewDefault.default) {
     }
     _generateMarkup() {
         return `
-        <figure class="recipe__fig">
+        <figure class="recipe__fig">y
         <img src="${this._data.image}" alt="${this._data.image}" class="recipe__img" />
         <h1 class="recipe__title">
         <span>${this._data.title}</span>
@@ -2909,7 +2912,7 @@ class ResultsView extends (0, _viewDefault.default) {
     _generateMarkupPreview(result) {
         return `
       <li class="preview">
-      <a class="preview__link preview__link--active" href="${result.id}">
+      <a class="preview__link preview__link--active" href="#${result.id}">
         <figure class="preview__fig">
           <img src="${result.image}" alt="Test" />
         </figure>
@@ -2941,8 +2944,11 @@ class PaginationView extends (0, _viewDefault.default) {
         this._parentElement.addEventListener('click', function(e) {
             e.preventDefault();
             const btn = e.target.closest('.btn--inline');
+            if (!btn) return;
             console.log(btn);
-            handler();
+            const goToPage = +btn.dataset.goto;
+            console.log(goToPage);
+            handler(goToPage);
         });
     }
     _generateMarkup() {
@@ -2951,7 +2957,7 @@ class PaginationView extends (0, _viewDefault.default) {
         console.log(numPages);
         //Page 1 and there are other pages
         if (curPage === 1 && numPages > 1) return `  
-       <button class="btn--inline pagination__btn--next">
+       <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">
             <span>Page${curPage + 1}</span>
             <svg class="search__icon">
               <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>
@@ -2960,7 +2966,7 @@ class PaginationView extends (0, _viewDefault.default) {
           `;
         //Last page
         if (curPage === numPages && numPages > 1) return `
-          <<button class="btn--inline pagination__btn--prev">
+          <<button  data-goto="${curPage - 1}"class="btn--inline pagination__btn--prev">
             <svg class="search__icon">
               <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
             </svg>
@@ -2970,14 +2976,14 @@ class PaginationView extends (0, _viewDefault.default) {
      `;
         //Other page
         if (curPage < numPages) return `
-          <<button class="btn--inline pagination__btn--prev">
+          <<button data-goto="${curPage - 1}" class="btn--inline pagination__btn--prev">
             <svg class="search__icon">
               <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
             </svg>
             <span>Page${curPage - 1}</span>
           </button>
           
-             <button class="btn--inline pagination__btn--next">
+             <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">
             <span>Page${curPage + 1}</span>
             <svg class="search__icon">
               <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>

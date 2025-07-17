@@ -25,7 +25,7 @@ const timeout = function (s) {
 const controlRecepies = async function () {
   try {
     const id = window.location.hash.slice(1);
-
+    console.log(id);
     if (!id) return;
     recipeView.renderSpinner();
 
@@ -52,9 +52,7 @@ const controlSearchResults = async function (params) {
     //Render results
     console.log(model.state.search.results);
 
-    resultsView.render(model.getSearchResultsPage(4));
-
-    //4) REnder initial pagination buttons
+    resultsView.render(model.getSearchResultsPage());
 
     paginationView.render(model.state.search);
   } catch (err) {
@@ -62,8 +60,12 @@ const controlSearchResults = async function (params) {
   }
 };
 
-const controlPagination = function () {
-  console.log('Pag controller');
+const controlPagination = function (goToPage) {
+  //Render NEW Results
+  resultsView.render(model.getSearchResultsPage(goToPage));
+
+  //4) REnder new pagination buttons
+  paginationView.render(model.state.search);
 };
 
 const init = function () {
